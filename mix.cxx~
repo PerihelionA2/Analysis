@@ -1,0 +1,79 @@
+gROOT->Reset();
+
+#include <iostream>
+// C headers, root headers
+#include "TH1D.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TBrowser.h"
+#include "TRandom.h"
+#include "TCanvas.h"
+#include "TROOT.h"
+#include "TH2.h"
+
+TFile But("Pi0_CBTaggTAPS_3700.root");
+TFile Car_3500("Pi0_CBTaggTAPS_3500.root");
+TFile Car_3544("Pi0_CBTaggTAPS_3544.root");
+TFile Car_3590("Pi0_CBTaggTAPS_3590.root");
+
+void mix()
+{
+	TH1D* BThet1;
+	TH1D* BThet0;
+	TH1D* C3500_1;
+	TH1D* C3500_0;
+	TH1D* C3544_1;
+	TH1D* C3544_0;
+	TH1D* C3590_1;
+	TH1D* C3590_0;
+
+	TH1D *Asym = new TH1D("Asym", "Asym", 15, 0, 180);
+
+	But.GetObject("Theta_1", BThet1);
+	But.GetObject("Theta_0", BThet0);	
+	
+	Car_3500.GetObject("Theta_1", C3500_1);
+	Car_3500.GetObject("Theta_0", C3500_0);
+	Car_3544.GetObject("Theta_1", C3544_1);
+	Car_3544.GetObject("Theta_0", C3544_0);
+	Car_3590.GetObject("Theta_1", C3590_1);
+	Car_3590.GetObject("Theta_0", C3590_0);
+	
+	//stack the carbon data (better statistics) 
+	C3500_1 -> Add(C3544_1, 1);
+	C3500_1 -> Add(C3590_1, 1);
+
+	C3500_0 -> Add(C3544_0, 1);
+	C3500_0 -> Add(C3590_0, 1);
+
+	for(int i_bin = 1; i_bin <= 30; i_bin++)
+	{
+				
+		Double_t byeild_0, byeild_1, cyeild_0, cyeild_1, yeild_0, yeild_1, asym, err;
+	
+		byeild_0 = BThet0 -> GetBinContent(i_bin);
+		byeild_1 = BThet1 -> GetBinContent(i_bin);
+		cyeild_0 = C3500_1 -> GetBinContent(i_bin);
+		cyeild_1 = C3500_1 -> GetBinContent(i_bin);
+		
+		yeild_0 = byeild_0 - cyeild_0*(2.3/6.9);
+		yeild_1 = byeild_1 - cyeild_1*(2.3/6.9);	
+
+		if(yeild_0 < 0) yeild_0 = yeild_0*(-1);
+		if(yeild_1 < 0) yeild_1 = yeild_1*(-1);
+				
+		// Asymmetry(and Polarization) calculation using the yeilds of both helicities			
+		asym = (yeild_0 - yeild_1)/(yeild_0 + yeild_1);
+
+		// Error calcalution using counting error 
+		err  = (2./(pow(yeild_0 + yeild_1, 2.)))*sqrt(pow(yeild_0,2.)*yeild_1 
+							    + pow(yeild_1,2.)*yeild_0);
+
+		if(yeild_0 + yeild_1 != 0) Asym -> SetBinContent(i_bin, asym);
+		if(yeild_0 + yeild_1 != 0) Asym -> SetBinError(i_bin, err);	
+		cout << asym << endl;
+	}
+	
+	TCanvas *C1 = new TCanvas();
+	Asym -> Draw();
+}

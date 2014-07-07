@@ -1,0 +1,117 @@
+
+
+#include "/home/dylan/Desktop/A2/include/mix2.h"
+
+// Carbon Backgroun data, used for noise cancellation
+TFile Car_3500("Pi0_CBTaggTAPS_3500.root");
+TFile Car_3544("Pi0_CBTaggTAPS_3544.root");
+TFile Car_3590("Pi0_CBTaggTAPS_3590.root");
+
+// prefixes pretain to target idendity.
+// data types ending with _1,_0 refer 
+// to relative helicity.
+
+Int_t mix2()
+{
+	//initialize ppi0 class 
+	ppi0 data;
+	std::cout << "######################################################################" << endl;
+	std::cout << "Initializing Carbon data.. " << endl << endl;
+	data.Carbon(); 
+	//std::cout << "Amount of files for analysis : ";
+	Int_t n_file = 1;
+	//std::cin >> n_file;
+	data.Setn_file(n_file);
+	if (!n_file)     return 0;
+	
+	if (n_file == 0) return 0;
+
+	else()
+	{	
+		// Set Theta bin. Bin range is constant.
+		//std::cout << "Theta bin: ";
+		Int_t n_bin = 8;
+		//std::cin >> n_bin;
+		data.Setn_bin(n_bin);
+		if (!n_bin) return 0;
+		if (n_bin == 1) std::cout << "This is the underflow bin!, choose again..";
+		else ()
+		{
+			std::cout << endl << "Starting Butanol file input loop..." << endl;
+			data.Asymmetry();
+		}
+	}
+}
+// class constuctor
+ppi0 :: ppi0() 
+{ 
+}
+// class destructor
+ppi0 :: ~ppi0()
+{
+}
+void ppi0 :: Asymmetry()
+{	
+	// loop through files
+	for(Int_t index = 0; index < 1; index++)
+	{
+		// File io, 
+		FileIn(index);
+		TFile But(run);
+		//cout << "bin = " << n_bin << endl;
+
+		// extract Butanol Theta distributions for both helicities
+		But.GetObject("Theta_1", BThet_1);
+		But.GetObject("Theta_0", BThet_0);	
+	
+		//integrate over given bin of the Theta distributions
+		byeild_0 = BThet_0 -> GetBinContent(n_bin);
+		byeild_1 = BThet_1 -> GetBinContent(n_bin);
+		cyeild_0 = C3500_0 -> GetBinContent(n_bin);
+		cyeild_1 = C3500_1 -> GetBinContent(n_bin);
+
+		// Carbon background subtraction, with scaling function. 
+		yeild_0 = byeild_0 - cyeild_0*Scale();
+		yeild_1 = byeild_1 - cyeild_1*Scale();
+		
+		// Strickly positive yeilds 
+		if(yeild_0 < 0) yeild_0 = yeild_0*(-1);
+		if(yeild_1 < 0) yeild_1 = yeild_1*(-1);
+		
+		// Asymmetry(and Polarization) calculation using the yeilds of both helicities			
+		asym = (yeild_0 - yeild_1)/(yeild_0 + yeild_1);
+
+		// Error calcalution using counting error standard deviation 
+		err  = (2./(pow(yeild_0 + yeild_1, 2.)))*sqrt(pow(yeild_0,2.)*yeild_1 
+						            + pow(yeild_1,2.)*yeild_0);
+		// output data points to external file	
+		std::cout << index << " " << asym << " " << err << endl;
+		
+	}
+}
+void ppi0 :: Carbon()
+{	
+	//extract carbon background Theta distributions
+	Car_3500.GetObject("Theta_1", C3500_1);
+	Car_3500.GetObject("Theta_0", C3500_0);
+	Car_3544.GetObject("Theta_1", C3544_1);
+	Car_3544.GetObject("Theta_0", C3544_0);
+	Car_3590.GetObject("Theta_1", C3590_1);
+	Car_3590.GetObject("Theta_0", C3590_0);
+	
+	//stack the carbon data (better statistics) 
+	C3500_1 -> Add(C3544_1, 1);
+	C3500_1 -> Add(C3590_1, 1);
+
+	C3500_0 -> Add(C3544_0, 1);
+	C3500_0 -> Add(C3590_0, 1);
+}
+void ppi0 :: FileIn(Int_t index)
+{
+	
+	std::cout << "#########################################################################" << endl;
+	std::cout << "Input file name #" << index << " : ";
+	std::cin >> run;
+	std::cout << endl << "Input compressed raw data filesize : ";
+	std::cin >> filesize;
+}
