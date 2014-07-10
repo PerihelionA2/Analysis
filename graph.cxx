@@ -5,10 +5,20 @@
 
 void graph()
 {
+	gROOT -> SetStyle("Plain");
 	TCanvas *c1 = new TCanvas();
-	TGraphErrors data("data_bin8.txt", "%lg %lg %lg");
+	c1 -> SetGrid();
+	TGraphErrors data("data-carb-all.txt", "%lg %lg %lg");
+	//TGraphErrors data("data.txt", "%lg %lg %lg");
+	data.SetTitle("Frozen Spin Target Polarization/Asymmetry ;time [days]; #Sigma P_{#gamma}");
+	data.SetMarkerStyle(kCircle);
+	data.SetFillColor(0);
+	data.SetLineColor(56);
+	data.Fit("pol1","","",1,8);
 	data.DrawClone();
+	c1->Print("Fit.png", "png"); 
 
-	//c1 -> Print("ESP");
+	TFile f("data.root","recreate"); //Open file, then write histo to it.
+  	data.Write();
 }
 	
