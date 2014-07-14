@@ -1,0 +1,43 @@
+{
+//========= Macro generated from object: Asymmetry_theta/#Sigma P_{#gamma}_theta_pi0
+//========= by ROOT version5.34/18
+   
+   TH1D *Asymmetry_theta = new TH1D("Asymmetry_theta","#Sigma P_{#gamma}_theta_pi0",10,0,180);
+   Asymmetry_theta->SetBinContent(1,0.0815743);
+   Asymmetry_theta->SetBinContent(2,0.0160937);
+   Asymmetry_theta->SetBinContent(3,-0.0413054);
+   Asymmetry_theta->SetBinContent(4,-0.074208);
+   Asymmetry_theta->SetBinContent(5,-0.0794211);
+   Asymmetry_theta->SetBinContent(6,-0.0491797);
+   Asymmetry_theta->SetBinContent(7,-0.00243156);
+   Asymmetry_theta->SetBinContent(8,0.0292277);
+   Asymmetry_theta->SetBinContent(9,0.00445499);
+   Asymmetry_theta->SetBinContent(10,0.0497849);
+   Asymmetry_theta->SetBinError(1,0.0318842);
+   Asymmetry_theta->SetBinError(2,0.0115194);
+   Asymmetry_theta->SetBinError(3,0.00900065);
+   Asymmetry_theta->SetBinError(4,0.00863975);
+   Asymmetry_theta->SetBinError(5,0.00888518);
+   Asymmetry_theta->SetBinError(6,0.010583);
+   Asymmetry_theta->SetBinError(7,0.013924);
+   Asymmetry_theta->SetBinError(8,0.0192011);
+   Asymmetry_theta->SetBinError(9,0.0277343);
+   Asymmetry_theta->SetBinError(10,0.0495219);
+   Asymmetry_theta->SetEntries(10);
+
+   ci = TColor::GetColor("#000099");
+   Asymmetry_theta->SetLineColor(ci);
+   Asymmetry_theta->GetXaxis()->SetLabelFont(42);
+   Asymmetry_theta->GetXaxis()->SetLabelSize(0.035);
+   Asymmetry_theta->GetXaxis()->SetTitleSize(0.035);
+   Asymmetry_theta->GetXaxis()->SetTitleFont(42);
+   Asymmetry_theta->GetYaxis()->SetLabelFont(42);
+   Asymmetry_theta->GetYaxis()->SetLabelSize(0.035);
+   Asymmetry_theta->GetYaxis()->SetTitleSize(0.035);
+   Asymmetry_theta->GetYaxis()->SetTitleFont(42);
+   Asymmetry_theta->GetZaxis()->SetLabelFont(42);
+   Asymmetry_theta->GetZaxis()->SetLabelSize(0.035);
+   Asymmetry_theta->GetZaxis()->SetTitleSize(0.035);
+   Asymmetry_theta->GetZaxis()->SetTitleFont(42);
+   Asymmetry_theta->Draw("png");
+}

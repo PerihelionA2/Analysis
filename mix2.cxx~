@@ -17,7 +17,7 @@ TFile Car_3590("Pi0_CBTaggTAPS_3590.root");
 // to relative helicity.	       
 ///////////////////////
 
-ofstream fout("data-carb-all.txt");
+ofstream fout("data-carb-all4.txt");
 
 Int_t mix2()
 {
@@ -84,6 +84,8 @@ void ppi0 :: Asymmetry(Int_t index)
 	Cyeild_0 = C3500_0 -> GetBinContent(n_bin);
 	Cyeild_1 = C3500_1 -> GetBinContent(n_bin);
 
+	std::cout << Cyeild_0 << " " Cyeild_0 << endl;
+		
 	// Carbon background subtraction, with scaling function. 
 	if(ButaEvnt < 12714948) yeild_0 = Byeild_0 - Cyeild_0*Scale();
 	if(ButaEvnt < 12714948) yeild_1 = Byeild_1 - Cyeild_1*Scale();
@@ -91,8 +93,8 @@ void ppi0 :: Asymmetry(Int_t index)
 	if(ButaEvnt > 12714948) yeild_0 = Byeild_0*Scale() - Cyeild_0;
 	if(ButaEvnt > 12714948) yeild_1 = Byeild_1*Scale() - Cyeild_1;
 
-	//yeild_0 = byeild_0;
-	//yeild_1 = byeild_1;
+	//yeild_0 = Byeild_0;
+	//yeild_1 = Byeild_1;
 
 	// Strickly positive yeilds 
 	if(yeild_0 < 0) yeild_0 = yeild_0*(-1);
@@ -143,7 +145,7 @@ void ppi0 :: Graph()
 	TCanvas *c1 = new TCanvas();
 	c1 -> SetGrid();
 	
-	TGraphErrors data("data-carb-all.txt", "%lg %lg %lg");
+	TGraphErrors data("data-carb-all4.txt", "%lg %lg %lg");
 	//TGraphErrors data("data.txt", "%lg %lg %lg");
 	
 	// Graph Settings
@@ -155,9 +157,9 @@ void ppi0 :: Graph()
 	data.DrawClone();
 
 	// Print as PNG
-	c1->Print("Fit.png", "png"); 
+	c1->Print("Fit4.png", "png"); 
 
 	//Write into root file
-	TFile f("data.root","recreate");
+	TFile f("data4.root","recreate");
   	data.Write();
 }
